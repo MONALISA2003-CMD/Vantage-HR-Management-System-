@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vantage HR — My Portal</title>
+<meta name="description" content="Employee self-service: payslips, leave, goals, and learning in one place.">
+<meta name="theme-color" content="#2E7D52">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#2E7D52; --green-dark:#1E5438; --green-light:#3A9E68;
+  --green-soft:#EBF3EE; --gold:#C9A84C; --gold-soft:#FEF9E7;
+  --paper:#F7F9F7; --white:#FFFFFF;
+  --ink:#1A2420; --ink-mid:#3D4F47; --ink-soft:#6B7B72; --ink-faint:#A0AFA8;
+  --border:#DDE5D9; --border-strong:#BDD0C5;
+  --danger:#C0392B; --danger-soft:#FDEDEC;
+  --shadow-sm:0 1px 4px rgba(10,37,24,0.08);
+  --shadow-md:0 4px 16px rgba(10,37,24,0.10);
+  --r-sm:8px; --r-md:12px; --r-lg:18px; --r-xl:24px; --r-pill:999px;
+  --font:'Inter',system-ui,sans-serif;
+  --t:180ms ease;
+  --accent:var(--green);
+}
+html{height:100%;}
+body{font-family:var(--font);color:var(--ink);background:var(--paper);height:100%;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+
+/* ============================================================ LOGIN */
+#login-screen{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:28px;background:var(--green-dark);
+}
+.login-card{
+  width:100%;max-width:400px;background:var(--white);
+  border-radius:var(--r-xl);padding:36px 28px;box-shadow:var(--shadow-md);
+}
+.login-brand{text-align:center;margin-bottom:28px;}
+.login-mark{
+  width:52px;height:52px;border-radius:14px;background:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:700;color:var(--white);margin:0 auto 12px;
+}
+.login-brand h1{font-size:20px;font-weight:700;color:var(--ink);}
+.login-brand p{font-size:13px;color:var(--ink-soft);margin-top:4px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink-mid);margin-bottom:6px;}
+.field select,.field input{
+  width:100%;padding:11px 13px;border:1px solid var(--border);
+  border-radius:var(--r-sm);background:var(--white);color:var(--ink);
+  font-family:var(--font);font-size:14px;
+  transition:border-color var(--t);-webkit-appearance:none;appearance:none;
+}
+.field select:focus,.field input:focus{outline:none;border-color:var(--green);}
+.btn-login{
+  width:100%;padding:13px;background:var(--green);color:var(--white);
+  border:none;border-radius:var(--r-md);font-size:15px;font-weight:600;
+  cursor:pointer;transition:background var(--t),transform var(--t);
+  font-family:var(--font);
+}
+.btn-login:hover{background:var(--green-dark);transform:translateY(-1px);}
+.login-hint{font-size:12px;color:var(--ink-faint);text-align:center;margin-top:14px;}
+.login-hint a{color:var(--green);text-decoration:none;}
+.login-demo-note{
+  width:100%;max-width:400px;margin-top:16px;
+  background:rgba(255,255,255,0.08);border-radius:var(--r-lg);
+  padding:16px 18px;font-size:12px;color:rgba(255,255,255,0.6);line-height:1.6;
+}
+.login-demo-note strong{color:rgba(255,255,255,0.85);}
+
+/* ============================================================ SHELL */
+#portal-shell{display:none;height:100vh;display:none;flex-direction:column;}
+
+/* ---- TOP BAR ---- */
+.portal-topbar{
+  background:var(--green);color:var(--white);
+  padding:0 18px;height:56px;display:flex;align-items:center;
+  gap:12px;flex-shrink:0;position:sticky;top:0;z-index:50;
+}
+.ptb-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,0.18);display:flex;align-items:center;
+  justify-content:center;font-size:12.5px;font-weight:700;flex-shrink:0;
+}
+.ptb-info{flex:1;min-width:0;}
+.ptb-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ptb-role{font-size:11px;opacity:.7;margin-top:1px;}
+.ptb-signout{background:rgba(255,255,255,0.15);border:none;color:var(--white);
+  padding:6px 12px;border-radius:var(--r-sm);font-size:12px;cursor:pointer;font-family:var(--font);}
+.ptb-signout:hover{background:rgba(255,255,255,0.25);}
+
+/* ---- MAIN CONTENT ---- */
+.portal-main{flex:1;overflow-y:auto;padding-bottom:80px;}
+
+/* ---- BOTTOM NAV ---- */
+.portal-bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--white);border-top:1px solid var(--border);
+  display:flex;z-index:50;
+  box-shadow:0 -2px 12px rgba(0,0,0,0.06);
+}
+.pbn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;padding:9px 4px;
+  border:none;background:transparent;cursor:pointer;
+  color:var(--ink-faint);font-family:var(--font);
+  transition:color var(--t);
+}
+.pbn-item.active{color:var(--green);}
+.pbn-item svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;}
+.pbn-item span{font-size:10.5px;font-weight:600;}
+
+/* ---- PAGES ---- */
+.portal-page{display:none;padding:18px;}
+.portal-page.active{display:block;}
+
+/* ---- CARDS ---- */
+.p-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:18px;margin-bottom:14px;
+  box-shadow:var(--shadow-sm);
+}
+.p-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.p-card-head h3{font-size:14px;font-weight:700;color:var(--ink);}
+.p-card-head .card-link{font-size:12px;color:var(--green);font-weight:600;cursor:pointer;background:none;border:none;font-family:var(--font);}
+
+/* ---- STAT CHIPS ---- */
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.stat-chip{
+  background:var(--green-soft);border-radius:var(--r-md);
+  padding:14px;text-align:center;
+}
+.sc-val{font-size:28px;font-weight:700;color:var(--green);line-height:1;}
+.sc-label{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+
+/* ---- LEAVE BALANCE BARS ---- */
+.balance-row{margin-bottom:14px;}
+.br-head{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+.br-label{font-weight:600;color:var(--ink);}
+.br-count{color:var(--ink-soft);}
+.br-track{height:8px;background:var(--border);border-radius:var(--r-pill);overflow:hidden;}
+.br-fill{height:100%;border-radius:var(--r-pill);background:var(--green);transition:width 600ms ease;}
+
+/* ---- PILL STATUS ---- */
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:var(--r-pill);
+}
+.pill .dot{width:6px;height:6px;border-radius:50%;}
+.pill-active{background:var(--green-soft);color:var(--green-dark);}
+.pill-active .dot{background:var(--green);}
+.pill-pending{background:#FEF9E7;color:#8A6212;}
+.pill-pending .dot{background:var(--gold);}
+.pill-denied{background:var(--danger-soft);color:var(--danger);}
+.pill-denied .dot{background:var(--danger);}
+
+/* ---- LIST ROWS ---- */
+.list-row{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--border);
+}
+.list-row:last-child{border-bottom:none;padding-bottom:0;}
+.lr-icon{
+  width:38px;height:38px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;background:var(--green-soft);
+}
+.lr-meta{flex:1;min-width:0;}
+.lr-label{font-size:13.5px;font-weight:600;color:var(--ink);}
+.lr-sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+.lr-right{text-align:right;flex-shrink:0;}
+.lr-amount{font-size:13.5px;font-weight:700;color:var(--ink);}
+.lr-date{font-size:11.5px;color:var(--ink-faint);}
+
+/* ---- GOAL PROGRESS ---- */
+.goal-row{padding:14px 0;border-bottom:1px solid var(--border);}
+.goal-row:last-child{border-bottom:none;}
+.goal-title{font-size:13.5px;font-weight:600;margin-bottom:4px;}
+.goal-meta{font-size:12px;color:var(--ink-soft);margin-bottom:8px;}
+.goal-bar{height:7px;background:var(--border);border-radius:var(--r-pill);overflow:hidden;}
+.goal-fill{height:100%;border-radius:var(--r-pill);background:var(--green);}
+.goal-pct{font-size:11px;color:var(--ink-soft);margin-top:4px;}
+
+/* ---- COURSE CARD ---- */
+.course-row{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 0;border-bottom:1px solid var(--border);
+}
+.course-row:last-child{border-bottom:none;}
+.course-emoji{font-size:22px;flex-shrink:0;}
+.course-meta{flex:1;min-width:0;}
+.course-title{font-size:13.5px;font-weight:600;}
+.course-sub{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+.course-btn{
+  padding:7px 14px;border-radius:var(--r-md);font-size:12px;font-weight:600;
+  border:1px solid;cursor:pointer;font-family:var(--font);flex-shrink:0;
+  transition:all var(--t);
+}
+.course-btn.enrol{background:var(--green);border-color:var(--green);color:var(--white);}
+.course-btn.inprog{background:var(--gold-soft);border-color:var(--gold);color:#7A5B10;}
+.course-btn.done{background:var(--green-soft);border-color:var(--border-strong);color:var(--green);}
+
+/* ---- RECOGNITION ---- */
+.recog-row{padding:13px 0;border-bottom:1px solid var(--border);}
+.recog-row:last-child{border-bottom:none;}
+.recog-header{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.recog-value-tag{
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:var(--r-pill);
+  background:var(--gold-soft);color:#7A5B10;
+}
+.recog-from{font-size:12px;color:var(--ink-soft);}
+.recog-msg{font-size:13.5px;color:var(--ink-mid);line-height:1.5;}
+
+/* ---- LEAVE REQUEST FORM ---- */
+.leave-form{background:var(--green-soft);border-radius:var(--r-lg);padding:18px;margin-bottom:16px;}
+.leave-form h4{font-size:14px;font-weight:700;margin-bottom:14px;color:var(--ink);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-submit{
+  width:100%;padding:12px;background:var(--green);color:var(--white);
+  border:none;border-radius:var(--r-md);font-size:14px;font-weight:600;
+  cursor:pointer;font-family:var(--font);margin-top:12px;
+  transition:background var(--t);
+}
+.btn-submit:hover{background:var(--green-dark);}
+.btn-submit:disabled{background:var(--border-strong);cursor:not-allowed;}
+
+/* ---- PAYSLIP ---- */
+.payslip-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:20px;margin-bottom:14px;
+}
+.payslip-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.payslip-period{font-size:15px;font-weight:700;}
+.payslip-net{font-size:22px;font-weight:700;color:var(--green);text-align:right;}
+.payslip-net-label{font-size:11px;color:var(--ink-faint);}
+.payslip-lines{border-top:1px solid var(--border);padding-top:12px;}
+.ps-line{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;}
+.ps-line.deduction{color:var(--danger);}
+.ps-line.total{font-weight:700;border-top:1px solid var(--border);padding-top:8px;margin-top:4px;font-size:14px;}
+.ps-print-btn{
+  width:100%;padding:10px;margin-top:12px;background:transparent;
+  border:1px solid var(--border);border-radius:var(--r-md);font-size:13px;
+  font-weight:600;cursor:pointer;font-family:var(--font);color:var(--ink-mid);
+  transition:border-color var(--t),color var(--t);
+}
+.ps-print-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* ---- PROFILE ---- */
+.profile-header{
+  background:var(--green);border-radius:var(--r-xl);padding:24px 18px;
+  display:flex;align-items:center;gap:16px;margin-bottom:14px;
+  color:var(--white);
+}
+.profile-avatar-lg{
+  width:60px;height:60px;border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:700;flex-shrink:0;
+}
+.profile-name{font-size:18px;font-weight:700;}
+.profile-title{font-size:13px;opacity:.8;margin-top:3px;}
+.profile-id{font-size:11px;opacity:.6;margin-top:2px;font-family:monospace;}
+.profile-info-row{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 0;border-bottom:1px solid var(--border);font-size:13.5px;
+}
+.profile-info-row:last-child{border-bottom:none;}
+.pi-label{color:var(--ink-soft);width:110px;flex-shrink:0;font-size:12.5px;}
+.pi-value{font-weight:500;color:var(--ink);}
+
+/* ---- TOAST ---- */
+#portal-toast{
+  position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:var(--ink);color:var(--white);padding:10px 20px;border-radius:var(--r-pill);
+  font-size:13.5px;z-index:200;opacity:0;pointer-events:none;transition:all 200ms ease;
+  white-space:nowrap;max-width:calc(100vw - 40px);text-align:center;
+}
+#portal-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ---- SECTION DIVIDER ---- */
+.section-title{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink-faint);margin:20px 0 10px;}
+
+/* ---- EMPTY ---- */
+.empty{text-align:center;padding:36px 20px;color:var(--ink-faint);font-size:13.5px;}
+.empty .empty-icon{font-size:36px;display:block;margin-bottom:10px;}
+
+/* ---- DESKTOP LAYOUT ---- */
+@media(min-width:640px){
+  .portal-bottom-nav{display:none;}
+  #portal-shell{flex-direction:row;}
+  .portal-topbar{display:none;}
+  .portal-sidebar{
+    width:220px;flex-shrink:0;background:var(--white);border-right:1px solid var(--border);
+    display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto;
+  }
+  .psb-brand{padding:22px 18px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+  .psb-mark{width:34px;height:34px;border-radius:9px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--white);flex-shrink:0;}
+  .psb-name{font-size:14px;font-weight:700;}
+  .psb-sub{font-size:11px;color:var(--ink-faint);}
+  .psb-user{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+  .psb-avatar{width:36px;height:36px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--green);flex-shrink:0;}
+  .psb-uname{font-size:13px;font-weight:600;}
+  .psb-urole{font-size:11px;color:var(--ink-faint);}
+  .psb-nav{padding:10px 8px;flex:1;}
+  .psb-nav-item{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;
+    border-radius:var(--r-md);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    cursor:pointer;border:none;background:transparent;font-family:var(--font);
+    width:100%;text-align:left;transition:background var(--t),color var(--t);
+  }
+  .psb-nav-item:hover{background:var(--green-soft);color:var(--ink);}
+  .psb-nav-item.active{background:var(--green-soft);color:var(--green);font-weight:700;}
+  .psb-nav-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;flex-shrink:0;}
+  .psb-signout{padding:14px 18px;border-top:1px solid var(--border);margin-top:auto;}
+  .psb-signout button{width:100%;padding:9px;background:var(--paper);border:1px solid var(--border);border-radius:var(--r-md);font-size:13px;cursor:pointer;font-family:var(--font);color:var(--ink-soft);transition:all var(--t);}
+  .psb-signout button:hover{border-color:var(--danger);color:var(--danger);}
+  .portal-main{flex:1;overflow-y:auto;max-width:640px;margin:0 auto;padding-bottom:0;}
+  .portal-page{padding:24px;}
+}
+
+@media print{
+  #portal-shell,.portal-topbar,.portal-bottom-nav,.portal-sidebar,.ptb-signout{display:none !important;}
+  #print-area{display:block !important;}
+}
+#print-area{display:none;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-mark">V</div>
+      <h1>My Vantage Portal</h1>
+      <p>Employee self-service</p>
+    </div>
+    <div class="field">
+      <label for="p-org">Your organisation</label>
+      <select id="p-org">
+        <option value="">Select your organisation…</option>
+        <option value="krh">Kampala Ridge Hospital</option>
+        <option value="nlc">Nile Logistics Co.</option>
+        <option value="emb">Equator Microfinance Bank</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="p-employee">Your name</label>
+      <select id="p-employee" disabled>
+        <option value="">Select your organisation first</option>
+      </select>
+    </div>
+    <button class="btn-login" id="p-login-btn" disabled>Sign in to my portal</button>
+    <p class="login-hint">HR admin? <a href="index.html">Open the full HR platform →</a></p>
+  </div>
+  <div class="login-demo-note">
+    <strong>Demo:</strong> Select any organisation, then choose any employee name to explore the self-service portal. No password required in this prototype.
+  </div>
+</div>
+
+<!-- PORTAL SHELL -->
+<div id="portal-shell">
+
+  <!-- DESKTOP SIDEBAR -->
+  <aside class="portal-sidebar" id="portal-sidebar" style="display:none;">
+    <div class="psb-brand">
+      <div class="psb-mark">V</div>
+      <div><div class="psb-name">My Portal</div><div class="psb-sub">Vantage HR</div></div>
+    </div>
+    <div class="psb-user">
+      <div class="psb-avatar" id="psb-avatar">PN</div>
+      <div><div class="psb-uname" id="psb-name">Patricia Nantongo</div><div class="psb-urole" id="psb-role">HR Manager</div></div>
+    </div>
+    <nav class="psb-nav">
+      <button class="psb-nav-item active" data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+      <button class="psb-nav-item" data-tab="payslips"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>My Payslips</button>
+      <button class="psb-nav-item" data-tab="leave"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>My Leave</button>
+      <button class="psb-nav-item" data-tab="goals"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>My Goals</button>
+      <button class="psb-nav-item" data-tab="learning"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>My Learning</button>
+      <button class="psb-nav-item" data-tab="profile"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>My Profile</button>
+    </nav>
+    <div class="psb-signout"><button id="psb-signout-btn">Sign out</button></div>
+  </aside>
+
+  <!-- MOBILE TOP BAR -->
+  <div class="portal-topbar">
+    <div class="ptb-avatar" id="ptb-avatar">PN</div>
+    <div class="ptb-info"><div class="ptb-name" id="ptb-name">Patricia Nantongo</div><div class="ptb-role" id="ptb-role-label">Kampala Ridge Hospital</div></div>
+    <button class="ptb-signout" id="ptb-signout-btn">Sign out</button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="portal-main">
+
+    <!-- HOME -->
+    <div class="portal-page active" id="page-home">
+      <div class="p-card" id="home-hero" style="background:var(--green);color:var(--white);border:none;">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px;" id="home-greeting">Good morning, Patricia</div>
+        <div style="font-size:13px;opacity:.8;" id="home-date"></div>
+        <div style="font-size:12px;opacity:.65;margin-top:8px;" id="home-dept"></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-chip"><div class="sc-val" id="home-leave-left">—</div><div class="sc-label">Leave days remaining</div></div>
+        <div class="stat-chip"><div class="sc-val" id="home-courses-done">—</div><div class="sc-label">Courses completed</div></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><h3>Upcoming leave</h3><button class="card-link" data-goto="leave">Request leave</button></div>
+        <div id="home-upcoming-leave"></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><h3>Latest recognition</h3></div>
+        <div id="home-recognition"></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><h3>Latest announcements</h3><button class="card-link" id="home-see-all-ann">See all</button></div>
+        <div id="home-announcements"></div>
+      </div>
+    </div>
+
+    <!-- PAYSLIPS -->
+    <div class="portal-page" id="page-payslips">
+      <div style="font-size:20px;font-weight:700;margin-bottom:4px;">My Payslips</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:18px;" id="payslips-sub"></div>
+      <div id="payslips-list"></div>
+      <p style="font-size:11.5px;color:var(--ink-faint);margin-top:8px;">Sample figures for demonstration only. Not official payroll or tax documents.</p>
+    </div>
+
+    <!-- LEAVE -->
+    <div class="portal-page" id="page-leave">
+      <div style="font-size:20px;font-weight:700;margin-bottom:18px;">My Leave</div>
+      <div id="leave-balance-section"></div>
+      <div class="leave-form">
+        <h4>Request leave</h4>
+        <div class="field">
+          <label for="lv-type">Leave type</label>
+          <select id="lv-type"><option>Annual</option><option>Sick</option><option>Compassionate</option></select>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="lv-start">Start date</label><input type="date" id="lv-start"></div>
+          <div class="field"><label for="lv-end">End date</label><input type="date" id="lv-end"></div>
+        </div>
+        <div class="field"><label for="lv-reason">Reason (optional)</label><input type="text" id="lv-reason" placeholder="Brief description"></div>
+        <button class="btn-submit" id="lv-submit-btn">Submit leave request</button>
+      </div>
+      <div class="section-title">My leave history</div>
+      <div class="p-card"><div id="leave-history-list"></div></div>
+    </div>
+
+    <!-- GOALS -->
+    <div class="portal-page" id="page-goals">
+      <div style="font-size:20px;font-weight:700;margin-bottom:4px;">My Goals</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:18px;" id="goals-sub"></div>
+      <div class="p-card"><div id="goals-list"></div></div>
+    </div>
+
+    <!-- LEARNING -->
+    <div class="portal-page" id="page-learning">
+      <div style="font-size:20px;font-weight:700;margin-bottom:4px;">My Learning</div>
+      <div style="font-size:13px;color:var(--ink-soft);margin-bottom:18px;" id="learning-sub"></div>
+      <div class="section-title">Mandatory courses</div>
+      <div class="p-card" id="mandatory-courses"></div>
+      <div class="section-title">All courses</div>
+      <div class="p-card" id="all-courses"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="portal-page" id="page-profile">
+      <div id="profile-header-section"></div>
+      <div class="p-card">
+        <div class="p-card-head"><h3>Personal information</h3></div>
+        <div id="profile-info"></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><h3>Recognition received</h3></div>
+        <div id="profile-recognition"></div>
+      </div>
+      <div class="p-card">
+        <div class="p-card-head"><h3>Documents</h3></div>
+        <div id="profile-documents"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="portal-bottom-nav">
+    <button class="pbn-item active" data-tab="home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+    <button class="pbn-item" data-tab="payslips"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>Payslips</span></button>
+    <button class="pbn-item" data-tab="leave"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Leave</span></button>
+    <button class="pbn-item" data-tab="goals"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg><span>Goals</span></button>
+    <button class="pbn-item" data-tab="profile"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Profile</span></button>
+  </nav>
+
+</div>
+
+<div id="print-area"></div>
+<div id="portal-toast"></div>
+
+<script>
+/* ======================= DATA ======================= */
+const TENANTS = {
+  krh: {
+    name:'Kampala Ridge Hospital', accent:'#1E6E4B',
+    employees:[
+      {id:'KRH-0042',name:'Patricia Nantongo',title:'HR Manager',dept:'Administration',salary:4800000,hireDate:'2019-03-01',email:'patricia@kampalaridgehospital.org',phone:'+256 702 110 001'},
+      {id:'KRH-0021',name:'Dr. Joseph Byaruhanga',title:'Chief Medical Officer',dept:'Clinical Services',salary:7200000,hireDate:'2017-06-15',email:'joseph@kampalaridgehospital.org',phone:'+256 702 110 002'},
+      {id:'KRH-0101',name:'Miriam Nakabugo',title:'Head of Nursing',dept:'Nursing',salary:5500000,hireDate:'2018-01-10',email:'miriam@kampalaridgehospital.org',phone:'+256 702 110 003'},
+      {id:'KRH-0088',name:'Esther Akello',title:'Senior Nurse',dept:'Nursing',salary:3800000,hireDate:'2020-07-20',email:'esther@kampalaridgehospital.org',phone:'+256 702 110 004'},
+      {id:'KRH-0133',name:'Robert Ssekandi',title:'Chief Pharmacist',dept:'Pharmacy',salary:4200000,hireDate:'2019-11-05',email:'robert@kampalaridgehospital.org',phone:'+256 702 110 005'},
+      {id:'KRH-0096',name:'Florence Namutebi',title:'Finance Officer',dept:'Administration',salary:2800000,hireDate:'2021-02-14',email:'florence@kampalaridgehospital.org',phone:'+256 702 110 006'},
+      {id:'KRH-0117',name:'Victor Mugabi',title:'IT Manager',dept:'IT Support',salary:3200000,hireDate:'2020-09-01',email:'victor@kampalaridgehospital.org',phone:'+256 702 110 007'},
+      {id:'KRH-0149',name:'Hellen Auma',title:'Pharmacy Technician',dept:'Pharmacy',salary:2400000,hireDate:'2022-04-18',email:'hellen@kampalaridgehospital.org',phone:'+256 702 110 008'},
+      {id:'KRH-0119',name:'Sandra Nabirye',title:'Nurse',dept:'Nursing',salary:2600000,hireDate:'2022-08-01',email:'sandra@kampalaridgehospital.org',phone:'+256 702 110 009'},
+      {id:'KRH-0201',name:'Grace Atim',title:'Lab Technician',dept:'Clinical Services',salary:2800000,hireDate:'2023-01-09',email:'grace@kampalaridgehospital.org',phone:'+256 702 110 010'},
+      {id:'KRH-0204',name:'Lydia Nakayima',title:'Receptionist',dept:'Administration',salary:1800000,hireDate:'2023-06-15',email:'lydia@kampalaridgehospital.org',phone:'+256 702 110 011'},
+    ],
+    courses:[
+      {id:'CRS-K1',title:'Infection prevention & control',emoji:'🦠',durationHrs:3,mandatory:true,deadline:'2026-07-31'},
+      {id:'CRS-K2',title:'Patient data privacy',emoji:'🔒',durationHrs:2,mandatory:true,deadline:'2026-08-15'},
+      {id:'CRS-K3',title:'Leadership essentials',emoji:'🎯',durationHrs:8,mandatory:false,deadline:'2026-09-30'},
+      {id:'CRS-K4',title:'Mental health first aid',emoji:'🧠',durationHrs:4,mandatory:false,deadline:'2026-10-31'},
+    ],
+    recognition:[
+      {to:'KRH-0088',from:'KRH-0042',value:'🌟 Excellence',message:"Esther's dedication during the night shift shortage kept patient care standards high.",when:'2 days ago'},
+      {to:'KRH-0149',from:'KRH-0021',value:'💡 Innovation',message:'Robert built an IT ticketing system that cut resolution times by 40%.',when:'1 week ago'},
+    ],
+    announcements:[
+      {title:'New patient records system goes live 1 July',category:'Policy update',when:'2 days ago'},
+      {title:'Q2 award winners — congratulations!',category:'Celebration',when:'5 days ago'},
+      {title:'Updated fire safety procedures',category:'Urgent',when:'1 week ago'},
+    ],
+    leavePolicy:{annual:21,sick:10,compassionate:4},
+  },
+  nlc: {
+    name:'Nile Logistics Co.', accent:'#1A4E8A',
+    employees:[
+      {id:'NLC-0034',name:'Brian Okello',title:'Operations Director',dept:'Fleet Operations',salary:5800000,hireDate:'2018-04-10',email:'brian@nilelogistics.co.ug',phone:'+256 702 220 001'},
+      {id:'NLC-0019',name:'Patrick Ouma',title:'Senior Driver',dept:'Fleet Operations',salary:2800000,hireDate:'2019-08-22',email:'patrick@nilelogistics.co.ug',phone:'+256 702 220 002'},
+      {id:'NLC-0078',name:'Irene Akumu',title:'Head of Dispatch',dept:'Fleet Operations',salary:3400000,hireDate:'2020-01-15',email:'irene@nilelogistics.co.ug',phone:'+256 702 220 003'},
+      {id:'NLC-0061',name:'Peter Ssali',title:'Warehouse Supervisor',dept:'Warehouse',salary:3000000,hireDate:'2020-05-10',email:'peter@nilelogistics.co.ug',phone:'+256 702 220 004'},
+      {id:'NLC-0047',name:'Sarah Naigaga',title:'Fleet Manager',dept:'Fleet Operations',salary:3800000,hireDate:'2019-03-08',email:'sarah@nilelogistics.co.ug',phone:'+256 702 220 005'},
+      {id:'NLC-0028',name:'Michael Ochieng',title:'Sales Manager',dept:'Customer Service',salary:3200000,hireDate:'2021-06-20',email:'michael@nilelogistics.co.ug',phone:'+256 702 220 006'},
+      {id:'NLC-0011',name:'Agnes Nabwire',title:'Finance Manager',dept:'Finance',salary:3600000,hireDate:'2020-11-01',email:'agnes@nilelogistics.co.ug',phone:'+256 702 220 007'},
+      {id:'NLC-0103',name:'Denis Opoka',title:'Customer Service Officer',dept:'Customer Service',salary:2200000,hireDate:'2023-03-23',email:'denis@nilelogistics.co.ug',phone:'+256 702 220 008'},
+    ],
+    courses:[
+      {id:'CRS-N1',title:'Road safety & defensive driving',emoji:'🚛',durationHrs:4,mandatory:true,deadline:'2026-07-31'},
+      {id:'CRS-N2',title:'Dangerous goods handling',emoji:'⚠️',durationHrs:3,mandatory:true,deadline:'2026-08-31'},
+      {id:'CRS-N3',title:'Warehouse management systems',emoji:'📦',durationHrs:6,mandatory:false,deadline:'2026-09-30'},
+      {id:'CRS-N4',title:'Customer service excellence',emoji:'🤝',durationHrs:2,mandatory:false,deadline:'2026-10-15'},
+    ],
+    recognition:[
+      {to:'NLC-0019',from:'NLC-0034',value:'🚀 Going above and beyond',message:'Patrick coordinated three simultaneous Mombasa runs without a single delay.',when:'3 days ago'},
+      {to:'NLC-0078',from:'NLC-0019',value:'🎯 Results',message:"Irene's dispatch accuracy was 100% last month.",when:'2 weeks ago'},
+    ],
+    announcements:[
+      {title:'New cross-border permit requirements from August',category:'Policy update',when:'3 days ago'},
+      {title:'Warehouse safety week starts Monday',category:'General',when:'1 week ago'},
+    ],
+    leavePolicy:{annual:18,sick:10,compassionate:3},
+  },
+  emb: {
+    name:'Equator Microfinance Bank', accent:'#5C3D8F',
+    employees:[
+      {id:'EMB-0027',name:'Diana Kemigisha',title:'Chief Executive Officer',dept:'Executive',salary:12000000,hireDate:'2016-01-05',email:'diana@equatormfb.co.ug',phone:'+256 702 330 001'},
+      {id:'EMB-0006',name:'Josephine Achieng',title:'Deputy Managing Director',dept:'Executive',salary:9500000,hireDate:'2017-03-20',email:'josephine@equatormfb.co.ug',phone:'+256 702 330 002'},
+      {id:'EMB-0034',name:'Carol Nakimuli',title:'Compliance Manager',dept:'Risk & Compliance',salary:6200000,hireDate:'2018-09-10',email:'carol@equatormfb.co.ug',phone:'+256 702 330 003'},
+      {id:'EMB-0058',name:'Ruth Kizito',title:'Senior Loan Officer',dept:'Credit & Lending',salary:4800000,hireDate:'2019-07-15',email:'ruth@equatormfb.co.ug',phone:'+256 702 330 004'},
+      {id:'EMB-0071',name:'Edward Tumusiime',title:'Branch Manager',dept:'Branch Operations',salary:5500000,hireDate:'2019-02-28',email:'edward@equatormfb.co.ug',phone:'+256 702 330 005'},
+      {id:'EMB-0098',name:'Grace Namubiru',title:'IT Director',dept:'IT Support',salary:5100000,hireDate:'2020-04-01',email:'grace@equatormfb.co.ug',phone:'+256 702 330 006'},
+      {id:'EMB-0089',name:'Doreen Nalweyiso',title:'Head Teller',dept:'Branch Operations',salary:3200000,hireDate:'2020-10-15',email:'doreen@equatormfb.co.ug',phone:'+256 702 330 007'},
+      {id:'EMB-0015',name:'Samuel Okwi',title:'Finance Controller',dept:'Finance',salary:5800000,hireDate:'2018-06-01',email:'samuel@equatormfb.co.ug',phone:'+256 702 330 008'},
+      {id:'EMB-0119',name:'Lydia Nakayima',title:'Teller',dept:'Branch Operations',salary:2400000,hireDate:'2026-02-16',email:'lydia.n@equatormfb.co.ug',phone:'+256 702 330 009'},
+    ],
+    courses:[
+      {id:'CRS-E1',title:'Anti-money laundering (AML)',emoji:'💰',durationHrs:4,mandatory:true,deadline:'2026-07-31'},
+      {id:'CRS-E2',title:'Know your customer (KYC)',emoji:'🪪',durationHrs:3,mandatory:true,deadline:'2026-08-15'},
+      {id:'CRS-E3',title:'Credit risk assessment',emoji:'📊',durationHrs:6,mandatory:false,deadline:'2026-09-30'},
+      {id:'CRS-E4',title:'Digital banking & mobile money',emoji:'📱',durationHrs:3,mandatory:false,deadline:'2026-10-31'},
+    ],
+    recognition:[
+      {to:'EMB-0034',from:'EMB-0027',value:'🌟 Excellence',message:"Carol's compliance audit preparation was thorough — the cleanest audit we have ever had.",when:'Yesterday'},
+      {to:'EMB-0058',from:'EMB-0006',value:'🎯 Results',message:'Ruth exceeded her Q2 disbursement target by 18%.',when:'1 week ago'},
+    ],
+    announcements:[
+      {title:'Mbarara branch grand opening — 15 July',category:'Event',when:'1 day ago'},
+      {title:'Updated AML compliance requirements',category:'Urgent',when:'4 days ago'},
+      {title:'Staff savings scheme now open for enrolment',category:'General',when:'2 weeks ago'},
+    ],
+    leavePolicy:{annual:21,sick:10,compassionate:4},
+  }
+};
+
+/* ======================= STATE ======================= */
+let currentEmpId = null;
+let currentTenantKey = null;
+let currentPage = 'home';
+let courseProgress = {}; // { courseId: 'enrolled'|'completed' }
+let myLeaveRequests = [];
+
+/* ======================= HELPERS ======================= */
+function initials(name){ return name.split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+function fmt(n){ return 'UGX ' + Math.round(n).toLocaleString('en-US'); }
+function fmtDate(iso){ if(!iso) return '—'; const d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); }
+function dateOnly(iso){ return new Date(iso+'T00:00:00'); }
+function tenant(){ return TENANTS[currentTenantKey]; }
+function me(){ return tenant().employees.find(e=>e.id===currentEmpId); }
+function payeFor(g){ if(g<=235000)return 0; if(g<=335000)return(g-235000)*.1; if(g<=410000)return 10000+(g-335000)*.2; return 25000+(g-410000)*.3; }
+function nssfFor(g){ return Math.round(g*0.05); }
+function netPay(g){ return g - Math.round(payeFor(g)) - nssfFor(g); }
+function leaveBalance(e){ const h=Array.from(e.id).reduce((a,c)=>a*31+c.charCodeAt(0),0); const t=tenant().leavePolicy; return { annual:{used:4+(Math.abs(h)%14),total:t.annual}, sick:{used:Math.abs(h)%6,total:t.sick}, compassionate:{used:Math.abs(h)%3,total:t.compassionate} }; }
+
+function toast(msg){
+  const el=document.getElementById('portal-toast');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+function greeting(){
+  const h=new Date().getHours();
+  return h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+}
+
+/* ======================= LOGIN ======================= */
+document.getElementById('p-org').addEventListener('change', ev=>{
+  const key=ev.target.value;
+  const empSel=document.getElementById('p-employee');
+  empSel.innerHTML='<option value="">Select your name…</option>';
+  empSel.disabled=!key;
+  document.getElementById('p-login-btn').disabled=true;
+  if(!key) return;
+  TENANTS[key].employees.forEach(e=>{ const opt=document.createElement('option'); opt.value=e.id; opt.textContent=e.name; empSel.appendChild(opt); });
+});
+document.getElementById('p-employee').addEventListener('change', ev=>{
+  document.getElementById('p-login-btn').disabled=!ev.target.value;
+});
+document.getElementById('p-login-btn').addEventListener('click', ()=>{
+  currentTenantKey=document.getElementById('p-org').value;
+  currentEmpId=document.getElementById('p-employee').value;
+  if(!currentTenantKey||!currentEmpId) return;
+  signInEmployee();
+});
+
+function signInEmployee(){
+  const e=me(); const t=tenant();
+  // Load saved progress from localStorage
+  try{
+    const saved=localStorage.getItem('vhr_portal_'+currentEmpId);
+    if(saved){ const d=JSON.parse(saved); courseProgress=d.courses||{}; myLeaveRequests=d.leaves||[]; }
+  }catch(_){}
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('portal-shell').style.display='flex';
+  // Set accent colour
+  document.documentElement.style.setProperty('--accent', t.accent);
+  document.documentElement.style.setProperty('--green', t.accent);
+  // Top bar
+  document.getElementById('ptb-avatar').textContent=initials(e.name);
+  document.getElementById('ptb-name').textContent=e.name;
+  document.getElementById('ptb-role-label').textContent=t.name;
+  // Sidebar
+  document.getElementById('psb-avatar').textContent=initials(e.name);
+  document.getElementById('psb-name').textContent=e.name;
+  document.getElementById('psb-role').textContent=e.title;
+  if(window.innerWidth>=640){
+    document.getElementById('portal-sidebar').style.display='flex';
+  }
+  goTo('home');
+}
+
+/* ======================= NAVIGATION ======================= */
+function goTo(tab){
+  currentPage=tab;
+  document.querySelectorAll('.portal-page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active');
+  document.querySelectorAll('.pbn-item,.psb-nav-item').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  renderPage(tab);
+  document.querySelector('.portal-main').scrollTo(0,0);
+}
+document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>goTo(btn.dataset.tab)));
+document.querySelectorAll('[data-goto]').forEach(btn=>btn.addEventListener('click',()=>goTo(btn.dataset.goto)));
+
+// Sign out
+['ptb-signout-btn','psb-signout-btn'].forEach(id=>{ const el=document.getElementById(id); if(el) el.addEventListener('click',signOut); });
+function signOut(){
+  saveProgress();
+  currentEmpId=null; currentTenantKey=null; courseProgress={}; myLeaveRequests=[];
+  document.getElementById('portal-shell').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('p-org').value=''; document.getElementById('p-employee').innerHTML='<option value="">Select your organisation first</option>'; document.getElementById('p-employee').disabled=true; document.getElementById('p-login-btn').disabled=true;
+}
+
+function saveProgress(){
+  if(!currentEmpId) return;
+  try{ localStorage.setItem('vhr_portal_'+currentEmpId, JSON.stringify({courses:courseProgress,leaves:myLeaveRequests})); }catch(_){}
+}
+
+/* ======================= RENDER PAGES ======================= */
+function renderPage(tab){
+  if(tab==='home') renderHome();
+  else if(tab==='payslips') renderPayslips();
+  else if(tab==='leave') renderLeave();
+  else if(tab==='goals') renderGoals();
+  else if(tab==='learning') renderLearning();
+  else if(tab==='profile') renderProfile();
+}
+
+/* ---- HOME ---- */
+function renderHome(){
+  const e=me(); const t=tenant();
+  const h=new Date().getHours();
+  document.getElementById('home-greeting').textContent=greeting()+', '+e.name.split(' ')[0]+' 👋';
+  document.getElementById('home-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('home-dept').textContent=e.title+' · '+e.dept+' · '+t.name;
+  const bal=leaveBalance(e);
+  document.getElementById('home-leave-left').textContent=bal.annual.total-bal.annual.used;
+  const done=t.courses.filter(c=>courseProgress[c.id]==='completed').length;
+  document.getElementById('home-courses-done').textContent=done+'/'+t.courses.length;
+  // Upcoming leave
+  const upcomingEl=document.getElementById('home-upcoming-leave');
+  const upcoming=myLeaveRequests.filter(r=>r.status==='Pending'||r.status==='Approved');
+  if(upcoming.length===0){ upcomingEl.innerHTML='<div class="empty"><span class="empty-icon">🌴</span>No upcoming leave requests</div>'; }
+  else{ upcomingEl.innerHTML=upcoming.slice(0,2).map(r=>'<div class="list-row"><div class="lr-icon">🗓️</div><div class="lr-meta"><div class="lr-label">'+r.type+' leave</div><div class="lr-sub">'+fmtDate(r.startDate)+' – '+fmtDate(r.endDate)+'</div></div><span class="pill '+(r.status==='Pending'?'pill-pending':'pill-active')+'"><span class="dot"></span>'+r.status+'</span></div>').join(''); }
+  // Recognition
+  const recogEl=document.getElementById('home-recognition');
+  const myRecog=t.recognition.filter(r=>r.to===e.id);
+  if(myRecog.length===0){ recogEl.innerHTML='<div class="empty"><span class="empty-icon">🏆</span>No recognitions yet — keep up the great work!</div>'; }
+  else{ const r=myRecog[0]; recogEl.innerHTML='<div class="recog-row"><div class="recog-header"><span class="recog-value-tag">'+r.value+'</span><span class="recog-from">· '+r.when+'</span></div><div class="recog-msg">'+r.message+'</div></div>'; }
+  // Announcements
+  const annEl=document.getElementById('home-announcements');
+  annEl.innerHTML=t.announcements.slice(0,2).map(a=>'<div class="list-row"><div class="lr-icon">📢</div><div class="lr-meta"><div class="lr-label">'+a.title+'</div><div class="lr-sub">'+a.category+' · '+a.when+'</div></div></div>').join('');
+  document.getElementById('home-see-all-ann').addEventListener('click',()=>{ goTo('home'); toast('Announcements shown in detail on the HR admin platform.'); });
+}
+
+/* ---- PAYSLIPS ---- */
+function renderPayslips(){
+  const e=me();
+  document.getElementById('payslips-sub').textContent=e.name+' · '+tenant().name;
+  const months=['July 2026','June 2026','May 2026','April 2026','March 2026','February 2026'];
+  const list=document.getElementById('payslips-list');
+  list.innerHTML=months.map((month,i)=>{
+    const bonus=i===1?200000:0;
+    const gross=e.salary+bonus;
+    const paye=Math.round(payeFor(gross));
+    const nssf=nssfFor(gross);
+    const net=gross-paye-nssf;
+    return `<div class="payslip-card">
+      <div class="payslip-head">
+        <div><div class="payslip-period">${month}</div><div style="font-size:12px;color:var(--ink-faint);">Gross: ${fmt(gross)}</div></div>
+        <div><div class="payslip-net">${fmt(net)}</div><div class="payslip-net-label">Net pay</div></div>
+      </div>
+      <div class="payslip-lines">
+        <div class="ps-line"><span>Gross salary</span><span>${fmt(e.salary)}</span></div>
+        ${bonus?'<div class="ps-line"><span>Bonus</span><span>+'+fmt(bonus)+'</span></div>':''}
+        <div class="ps-line deduction"><span>PAYE tax</span><span>−${fmt(paye)}</span></div>
+        <div class="ps-line deduction"><span>NSSF (5%)</span><span>−${fmt(nssf)}</span></div>
+        <div class="ps-line total"><span>Net pay</span><span>${fmt(net)}</span></div>
+      </div>
+      <button class="ps-print-btn" data-month="${month}" data-net="${net}" data-gross="${gross}">⬇ Download / Print payslip</button>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.ps-print-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const e2=me(); const t=tenant();
+      document.getElementById('print-area').innerHTML=`<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;padding:40px;">
+        <h2 style="color:${t.accent};margin-bottom:4px;">${t.name}</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:24px;">Payslip for ${btn.dataset.month}</p>
+        <p><strong>${e2.name}</strong><br>${e2.title} · ${e2.dept}<br>Employee ID: ${e2.id}</p>
+        <hr style="margin:20px 0;border:none;border-top:1px solid #ddd;">
+        <table style="width:100%;font-size:14px;">
+          <tr><td>Gross salary</td><td style="text-align:right">${fmt(e2.salary)}</td></tr>
+          <tr style="color:#C0392B"><td>PAYE tax</td><td style="text-align:right">−${fmt(Math.round(payeFor(e2.salary)))}</td></tr>
+          <tr style="color:#C0392B"><td>NSSF (5%)</td><td style="text-align:right">−${fmt(nssfFor(e2.salary))}</td></tr>
+          <tr style="font-weight:700;border-top:2px solid #333;"><td>Net pay</td><td style="text-align:right">${btn.dataset.net?fmt(Number(btn.dataset.net)):''}</td></tr>
+        </table>
+        <p style="font-size:11px;color:#999;margin-top:30px;">Sample figures for demonstration only. Not an official payroll or tax document.</p>
+      </div>`;
+      window.print();
+    });
+  });
+}
+
+/* ---- LEAVE ---- */
+function renderLeave(){
+  const e=me();
+  const bal=leaveBalance(e);
+  const balEl=document.getElementById('leave-balance-section');
+  balEl.innerHTML=`<div class="p-card">
+    <div class="p-card-head"><h3>My leave balance</h3></div>
+    ${Object.entries(bal).map(([type,b])=>`
+    <div class="balance-row">
+      <div class="br-head"><span class="br-label">${type.charAt(0).toUpperCase()+type.slice(1)} leave</span><span class="br-count">${b.total-b.used} of ${b.total} days remaining</span></div>
+      <div class="br-track"><div class="br-fill" style="width:${(b.used/b.total*100)}%;background:${b.used/b.total>0.8?'var(--danger)':'var(--green)'}"></div></div>
+    </div>`).join('')}
+  </div>`;
+  // Set default dates
+  const today=new Date().toISOString().slice(0,10);
+  const next=new Date(); next.setDate(next.getDate()+7);
+  document.getElementById('lv-start').value=today;
+  document.getElementById('lv-end').value=next.toISOString().slice(0,10);
+  // History
+  const histEl=document.getElementById('leave-history-list');
+  const all=[...myLeaveRequests];
+  if(all.length===0){ histEl.innerHTML='<div class="empty"><span class="empty-icon">📋</span>No leave requests yet</div>'; }
+  else{ histEl.innerHTML=all.slice().reverse().map(r=>`<div class="list-row"><div class="lr-icon">🗓️</div><div class="lr-meta"><div class="lr-label">${r.type} leave</div><div class="lr-sub">${fmtDate(r.startDate)} – ${fmtDate(r.endDate)}</div></div><span class="pill ${r.status==='Pending'?'pill-pending':r.status==='Approved'?'pill-active':'pill-denied'}"><span class="dot"></span>${r.status}</span></div>`).join(''); }
+}
+
+document.getElementById('lv-submit-btn').addEventListener('click',()=>{
+  const type=document.getElementById('lv-type').value;
+  const start=document.getElementById('lv-start').value;
+  const end=document.getElementById('lv-end').value;
+  if(!start||!end||dateOnly(end)<dateOnly(start)){ toast('Check your dates and try again'); return; }
+  const days=Math.round((dateOnly(end)-dateOnly(start))/86400000)+1;
+  myLeaveRequests.push({ type, startDate:start, endDate:end, status:'Pending', days });
+  saveProgress();
+  document.getElementById('lv-reason').value='';
+  toast(type+' leave request submitted — '+days+' day'+(days===1?'':'s'));
+  renderLeave();
+});
+
+/* ---- GOALS ---- */
+function renderGoals(){
+  const e=me(); const t=tenant();
+  const myGoals=(t.goals||[]).filter(g=>g.assignedTo===e.id||(g.department===e.dept&&!g.assignedTo));
+  const sub=document.getElementById('goals-sub');
+  sub.textContent=myGoals.length+' goal'+(myGoals.length===1?'':'s')+' assigned to you or your department';
+  const el=document.getElementById('goals-list');
+  if(myGoals.length===0){ el.innerHTML='<div class="empty"><span class="empty-icon">🎯</span>No goals assigned yet. Your manager will add them here.</div>'; return; }
+  el.innerHTML=myGoals.map(g=>`<div class="goal-row">
+    <div class="goal-title">${g.title}</div>
+    <div class="goal-meta">Due ${fmtDate(g.dueDate)} · <span class="${g.status==='At risk'?'':''}">
+      ${g.status==='At risk'?'⚠️ At risk':g.status==='Completed'?'✅ Completed':'🟢 On track'}</span></div>
+    <div class="goal-bar"><div class="goal-fill" style="width:${g.progress}%"></div></div>
+    <div class="goal-pct">${g.progress}% complete</div>
+  </div>`).join('');
+}
+
+/* ---- LEARNING ---- */
+function renderLearning(){
+  const t=tenant();
+  const done=t.courses.filter(c=>courseProgress[c.id]==='completed').length;
+  const inProg=t.courses.filter(c=>courseProgress[c.id]==='enrolled').length;
+  document.getElementById('learning-sub').textContent=done+' completed · '+inProg+' in progress · '+t.courses.length+' total';
+  function renderCourseList(courses, containerId){
+    const el=document.getElementById(containerId);
+    if(courses.length===0){ el.innerHTML='<div class="empty">None in this category</div>'; return; }
+    el.innerHTML=courses.map(c=>{
+      const status=courseProgress[c.id]||null;
+      const btnClass=status==='completed'?'done':status==='enrolled'?'inprog':'enrol';
+      const btnLabel=status==='completed'?'✓ Completed':status==='enrolled'?'Mark complete':'Enrol';
+      return `<div class="course-row">
+        <span class="course-emoji">${c.emoji}</span>
+        <div class="course-meta"><div class="course-title">${c.title}${c.mandatory?' <span style="font-size:10px;color:var(--danger);font-weight:700;">MANDATORY</span>':''}</div><div class="course-sub">${c.durationHrs}h · Due ${fmtDate(c.deadline)}</div></div>
+        <button class="course-btn ${btnClass}" data-course="${c.id}">${btnLabel}</button>
+      </div>`;
+    }).join('');
+    el.querySelectorAll('[data-course]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const id=btn.dataset.course;
+        if(courseProgress[id]==='completed'){ toast('Already completed'); return; }
+        if(courseProgress[id]==='enrolled'){ courseProgress[id]='completed'; saveProgress(); toast('🎉 Course marked as completed!'); }
+        else { courseProgress[id]='enrolled'; saveProgress(); toast('Enrolled! Click again to mark complete.'); }
+        renderLearning();
+      });
+    });
+  }
+  renderCourseList(t.courses.filter(c=>c.mandatory), 'mandatory-courses');
+  renderCourseList(t.courses.filter(c=>!c.mandatory), 'all-courses');
+}
+
+/* ---- PROFILE ---- */
+function renderProfile(){
+  const e=me(); const t=tenant();
+  document.getElementById('profile-header-section').innerHTML=`<div class="profile-header">
+    <div class="profile-avatar-lg">${initials(e.name)}</div>
+    <div>
+      <div class="profile-name">${e.name}</div>
+      <div class="profile-title">${e.title} · ${e.dept}</div>
+      <div class="profile-id">${e.id}</div>
+    </div>
+  </div>`;
+  document.getElementById('profile-info').innerHTML=[
+    ['Organisation', t.name],
+    ['Department', e.dept],
+    ['Work email', e.email],
+    ['Phone', e.phone],
+    ['Start date', fmtDate(e.hireDate)],
+    ['Salary', fmt(e.salary)+' gross/month'],
+    ['Net pay est.', fmt(netPay(e.salary))+'/month'],
+  ].map(([l,v])=>`<div class="profile-info-row"><span class="pi-label">${l}</span><span class="pi-value">${v}</span></div>`).join('');
+  const myRecog=t.recognition.filter(r=>r.to===e.id);
+  const recogEl=document.getElementById('profile-recognition');
+  recogEl.innerHTML=myRecog.length===0?'<div class="empty"><span class="empty-icon">🏆</span>No recognitions yet</div>'
+    : myRecog.map(r=>`<div class="recog-row"><div class="recog-header"><span class="recog-value-tag">${r.value}</span><span class="recog-from">from a colleague · ${r.when}</span></div><div class="recog-msg">${r.message}</div></div>`).join('');
+  const docs=['Employment contract','NDA & confidentiality agreement','Role description','Benefits summary'];
+  document.getElementById('profile-documents').innerHTML=docs.map(d=>`<div class="list-row"><div class="lr-icon">📄</div><div class="lr-meta"><div class="lr-label">${d}</div><div class="lr-sub">Uploaded on file</div></div><button onclick="toast('Document download available in the production version')" style="background:none;border:1px solid var(--border);border-radius:var(--r-sm);padding:5px 10px;font-size:11.5px;cursor:pointer;font-family:var(--font);">View</button></div>`).join('');
+}
+
+/* ======================= RESPONSIVE ======================= */
+window.addEventListener('resize',()=>{
+  const sidebar=document.getElementById('portal-sidebar');
+  if(sidebar) sidebar.style.display=window.innerWidth>=640&&currentEmpId?'flex':'none';
+});
+</script>
+</body>
+</html>

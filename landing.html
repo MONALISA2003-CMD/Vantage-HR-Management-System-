@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vantage HR — People management for East African organisations</title>
+<meta name="description" content="Vantage HR is a complete HR platform built for East African businesses. Payroll, leave, recruitment, performance, and 20+ more modules in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --forest:#0A2518;
+  --forest-mid:#122E1E;
+  --forest-light:#1A3D28;
+  --green:#2E7D52;
+  --green-light:#3A9E68;
+  --gold:#C9A84C;
+  --gold-soft:#F5EDD6;
+  --paper:#F8F5EE;
+  --paper-warm:#F0EBE1;
+  --mist:#EBF3EE;
+  --ink:#1A2420;
+  --ink-mid:#3D4F47;
+  --ink-soft:#6B7B72;
+  --ink-faint:#9EADA6;
+  --border:#DDE5D9;
+  --white:#FFFFFF;
+  --r-sm:6px; --r-md:10px; --r-lg:16px; --r-xl:24px; --r-pill:999px;
+  --font-display:'DM Serif Display',Georgia,serif;
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --t:200ms ease;
+  --shadow-sm:0 1px 3px rgba(10,37,24,0.10);
+  --shadow-md:0 4px 16px rgba(10,37,24,0.12);
+  --shadow-lg:0 16px 48px rgba(10,37,24,0.18);
+}
+
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);color:var(--ink);background:var(--paper);line-height:1.6;-webkit-font-smoothing:antialiased;}
+
+/* ---- NAV ---- */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(10,37,24,0.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.nav-inner{
+  max-width:1160px;margin:0 auto;padding:0 28px;
+  display:flex;align-items:center;gap:32px;height:66px;
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+.nav-logo-mark{
+  width:34px;height:34px;border-radius:8px;background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--forest);
+}
+.nav-logo-name{font-family:var(--font-display);font-size:17px;color:var(--white);letter-spacing:-.3px;}
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:auto;}
+.nav-links a{
+  font-size:13.5px;font-weight:500;color:rgba(255,255,255,0.72);
+  text-decoration:none;padding:6px 12px;border-radius:var(--r-sm);transition:color var(--t);
+}
+.nav-links a:hover{color:var(--white);}
+.nav-cta{
+  margin-left:8px;padding:9px 20px;
+  background:var(--gold);color:var(--forest);font-size:13.5px;font-weight:700;
+  border:none;border-radius:var(--r-sm);cursor:pointer;text-decoration:none;
+  transition:background var(--t),transform var(--t);display:inline-block;
+}
+.nav-cta:hover{background:#E0BA5A;transform:translateY(-1px);}
+.nav-mobile-btn{display:none;background:transparent;border:none;cursor:pointer;padding:4px;}
+.nav-mobile-btn svg{stroke:rgba(255,255,255,0.85);}
+
+/* ---- HERO ---- */
+.hero{
+  background:var(--forest);
+  padding:96px 28px 80px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 60% -10%, rgba(46,125,82,0.28) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(to bottom, transparent, var(--paper));
+  pointer-events:none;
+}
+.hero-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:22px;
+}
+.hero-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);}
+.hero-headline{
+  font-family:var(--font-display);font-size:clamp(36px,5vw,58px);
+  line-height:1.1;color:var(--white);margin-bottom:22px;letter-spacing:-.5px;
+}
+.hero-headline em{font-style:italic;color:var(--gold);}
+.hero-sub{
+  font-size:17px;color:rgba(255,255,255,0.65);line-height:1.65;margin-bottom:36px;max-width:480px;
+}
+.hero-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.btn-primary{
+  padding:14px 28px;background:var(--gold);color:var(--forest);
+  font-size:14.5px;font-weight:700;border:none;border-radius:var(--r-md);
+  cursor:pointer;text-decoration:none;display:inline-block;
+  transition:background var(--t),transform var(--t),box-shadow var(--t);
+}
+.btn-primary:hover{background:#E0BA5A;transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,168,76,0.4);}
+.btn-ghost{
+  padding:13px 24px;background:transparent;color:rgba(255,255,255,0.8);
+  font-size:14px;font-weight:500;border:1px solid rgba(255,255,255,0.2);
+  border-radius:var(--r-md);cursor:pointer;text-decoration:none;display:inline-block;
+  transition:border-color var(--t),color var(--t);
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.5);color:var(--white);}
+
+/* Hero pulse panel */
+.hero-pulse{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:var(--r-xl);padding:32px;backdrop-filter:blur(4px);
+  position:relative;
+}
+.hp-label{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:20px;display:flex;align-items:center;gap:7px;}
+.hp-label .live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:pulse-anim 2s infinite;}
+@keyframes pulse-anim{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.3);}}
+.hp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.hp-stat{background:rgba(255,255,255,0.05);border-radius:var(--r-md);padding:16px 18px;}
+.hp-stat .hs-n{font-family:var(--font-display);font-size:38px;color:var(--white);line-height:1;}
+.hp-stat .hs-l{font-size:12px;color:rgba(255,255,255,0.5);margin-top:5px;}
+.hp-stat .hs-up{font-size:11px;color:#4ade80;font-weight:600;margin-top:2px;}
+.hp-modules{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px;}
+.hp-mod{font-size:11px;padding:4px 10px;border-radius:var(--r-pill);background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.55);font-weight:500;}
+
+/* ---- TRUSTED BY ---- */
+.trusted{
+  background:var(--paper-warm);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:32px 28px;text-align:center;
+}
+.trusted-inner{max-width:1160px;margin:0 auto;}
+.trusted-label{font-size:12px;font-weight:600;letter-spacing:.7px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:22px;}
+.trusted-logos{display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;}
+.trusted-logo{
+  font-family:var(--font-display);font-size:14px;color:var(--ink-soft);
+  display:flex;align-items:center;gap:8px;
+}
+.trusted-logo .tl-mark{
+  width:28px;height:28px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;
+}
+
+/* ---- SECTION SHELL ---- */
+.section{padding:88px 28px;}
+.section-inner{max-width:1160px;margin:0 auto;}
+.section-alt{background:var(--mist);}
+.section-dark{background:var(--forest);color:var(--white);}
+.eyebrow{
+  font-size:11.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;
+  color:var(--green);margin-bottom:14px;
+}
+.section-dark .eyebrow{color:var(--gold);}
+.section-headline{
+  font-family:var(--font-display);font-size:clamp(30px,4vw,44px);
+  line-height:1.1;letter-spacing:-.4px;margin-bottom:18px;
+}
+.section-sub{font-size:17px;color:var(--ink-soft);line-height:1.65;max-width:580px;}
+.section-dark .section-sub{color:rgba(255,255,255,0.6);}
+
+/* ---- FEATURE GRID ---- */
+.features-intro{text-align:center;margin-bottom:56px;}
+.features-intro .section-sub{margin:0 auto;}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.feature-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:28px;transition:box-shadow var(--t),transform var(--t),border-color var(--t);
+}
+.feature-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px);border-color:rgba(46,125,82,0.3);}
+.fc-icon{
+  width:44px;height:44px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  margin-bottom:16px;background:var(--mist);
+}
+.fc-title{font-family:var(--font-display);font-size:17px;margin-bottom:8px;}
+.fc-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+.fc-modules{margin-top:14px;display:flex;flex-wrap:wrap;gap:5px;}
+.fc-tag{font-size:11px;padding:3px 8px;border-radius:var(--r-pill);background:var(--mist);color:var(--ink-soft);font-weight:500;}
+
+/* ---- HOW IT WORKS ---- */
+.how-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;margin-top:52px;}
+.how-step{position:relative;}
+.how-step::after{
+  content:'';position:absolute;top:20px;right:-16px;
+  width:32px;height:2px;background:var(--border);
+}
+.how-step:last-child::after{display:none;}
+.hs-num{
+  font-family:var(--font-display);font-size:56px;color:var(--border);
+  line-height:1;margin-bottom:16px;
+}
+.hs-title{font-family:var(--font-display);font-size:19px;margin-bottom:8px;}
+.hs-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.65;}
+
+/* ---- STATS BAND ---- */
+.stats-band{padding:64px 28px;background:var(--forest);}
+.stats-inner{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
+.stat-item{
+  text-align:center;padding:28px 20px;
+  border-right:1px solid rgba(255,255,255,0.08);
+}
+.stat-item:last-child{border-right:none;}
+.si-num{font-family:var(--font-display);font-size:52px;color:var(--white);line-height:1;margin-bottom:8px;}
+.si-label{font-size:13px;color:rgba(255,255,255,0.5);}
+.si-highlight{color:var(--gold);}
+
+/* ---- PRICING ---- */
+.pricing-intro{text-align:center;margin-bottom:52px;}
+.pricing-intro .section-sub{margin:0 auto;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto;}
+.pricing-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:32px;position:relative;
+}
+.pricing-card.popular{
+  border-color:var(--green);box-shadow:0 0 0 3px rgba(46,125,82,0.12);
+}
+.popular-badge{
+  position:absolute;top:-13px;left:50%;transform:translateX(-50%);
+  background:var(--green);color:#fff;font-size:11px;font-weight:700;
+  padding:4px 14px;border-radius:var(--r-pill);letter-spacing:.5px;white-space:nowrap;
+}
+.pc-plan{font-size:12.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;}
+.pc-price{font-family:var(--font-display);font-size:40px;line-height:1;color:var(--ink);}
+.pc-price sup{font-size:18px;vertical-align:top;margin-top:8px;font-family:var(--font-body);}
+.pc-price .per{font-family:var(--font-body);font-size:14px;color:var(--ink-soft);font-weight:400;}
+.pc-tagline{font-size:13px;color:var(--ink-soft);margin:12px 0 22px;}
+.pc-divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+.pc-feature{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;margin-bottom:10px;color:var(--ink-mid);}
+.pc-feature .check{color:var(--green);font-size:15px;margin-top:1px;flex-shrink:0;}
+.pc-feature .cross{color:var(--ink-faint);font-size:15px;margin-top:1px;flex-shrink:0;}
+.pc-cta{
+  display:block;width:100%;padding:12px;margin-top:24px;
+  border-radius:var(--r-md);font-size:14px;font-weight:600;cursor:pointer;
+  text-align:center;text-decoration:none;border:1px solid;
+  transition:all var(--t);
+}
+.pc-cta.outline{color:var(--green);border-color:var(--green);background:transparent;}
+.pc-cta.outline:hover{background:var(--mist);}
+.pc-cta.solid{background:var(--green);color:#fff;border-color:var(--green);}
+.pc-cta.solid:hover{background:var(--green-light);}
+.pc-note{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:8px;}
+
+/* ---- TESTIMONIALS ---- */
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:52px;}
+.testimonial{
+  background:var(--forest-mid);border:1px solid rgba(255,255,255,0.07);
+  border-radius:var(--r-xl);padding:28px;
+}
+.t-quote{font-size:15px;color:rgba(255,255,255,0.82);line-height:1.65;margin-bottom:24px;font-style:italic;}
+.t-quote::before{content:'"\2009';font-family:var(--font-display);font-size:32px;color:var(--gold);line-height:0;vertical-align:-12px;margin-right:2px;}
+.t-person{display:flex;align-items:center;gap:12px;}
+.t-avatar{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;flex-shrink:0;
+}
+.t-name{font-size:13px;font-weight:600;color:var(--white);}
+.t-role{font-size:12px;color:rgba(255,255,255,0.45);margin-top:2px;}
+
+/* ---- FAQ ---- */
+.faq-list{max-width:720px;margin:48px auto 0;}
+.faq-item{border-bottom:1px solid var(--border);}
+.faq-q{
+  width:100%;background:transparent;border:none;text-align:left;
+  padding:20px 0;font-size:15px;font-weight:600;color:var(--ink);
+  cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  transition:color var(--t);
+}
+.faq-q:hover{color:var(--green);}
+.faq-q .faq-icon{
+  width:24px;height:24px;border-radius:50%;background:var(--mist);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;
+  transition:transform var(--t),background var(--t);
+}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:var(--green);color:var(--white);}
+.faq-a{
+  max-height:0;overflow:hidden;transition:max-height 320ms ease;
+  font-size:14px;color:var(--ink-soft);line-height:1.7;
+}
+.faq-item.open .faq-a{max-height:300px;padding-bottom:20px;}
+
+/* ---- CTA SECTION ---- */
+.cta-section{
+  background:var(--green);padding:88px 28px;text-align:center;
+}
+.cta-inner{max-width:600px;margin:0 auto;}
+.cta-headline{
+  font-family:var(--font-display);font-size:clamp(28px,4vw,42px);
+  color:var(--white);line-height:1.15;margin-bottom:16px;
+}
+.cta-sub{font-size:17px;color:rgba(255,255,255,0.75);margin-bottom:36px;}
+.cta-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;}
+.btn-white{
+  padding:14px 28px;background:var(--white);color:var(--green);
+  font-size:14.5px;font-weight:700;border:none;border-radius:var(--r-md);
+  cursor:pointer;text-decoration:none;display:inline-block;
+  transition:transform var(--t),box-shadow var(--t);
+}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.15);}
+.btn-ghost-white{
+  padding:13px 24px;background:transparent;color:rgba(255,255,255,0.85);
+  font-size:14px;font-weight:500;border:1px solid rgba(255,255,255,0.35);
+  border-radius:var(--r-md);cursor:pointer;text-decoration:none;display:inline-block;
+  transition:border-color var(--t),color var(--t);
+}
+.btn-ghost-white:hover{border-color:rgba(255,255,255,0.7);color:var(--white);}
+.cta-footnote{margin-top:18px;font-size:12.5px;color:rgba(255,255,255,0.5);}
+
+/* ---- FOOTER ---- */
+.footer{background:var(--forest);padding:56px 28px 32px;}
+.footer-inner{max-width:1160px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px;}
+.footer-brand .fb-logo{display:flex;align-items:center;gap:9px;margin-bottom:14px;}
+.footer-brand .fb-logo-mark{width:30px;height:30px;border-radius:7px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--forest);}
+.footer-brand .fb-name{font-family:var(--font-display);font-size:16px;color:var(--white);}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.65;max-width:240px;}
+.footer-col h4{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:14px;}
+.footer-col ul{list-style:none;}
+.footer-col li{margin-bottom:8px;}
+.footer-col a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;transition:color var(--t);}
+.footer-col a:hover{color:var(--white);}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.07);padding-top:24px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;
+}
+.footer-bottom p{font-size:12.5px;color:rgba(255,255,255,0.3);}
+.footer-bottom a{color:rgba(255,255,255,0.5);text-decoration:none;}
+.footer-bottom a:hover{color:var(--white);}
+
+/* ---- MODULE SHOWCASE STRIP ---- */
+.module-strip{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;padding:0;border:1px solid var(--border);border-radius:var(--r-xl);}
+.module-strip::-webkit-scrollbar{display:none;}
+.ms-item{
+  flex-shrink:0;padding:16px 22px;border-right:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--ink-soft);
+  transition:background var(--t),color var(--t);cursor:default;
+}
+.ms-item:last-child{border-right:none;}
+.ms-item:hover{background:var(--mist);color:var(--ink);}
+.ms-icon{font-size:16px;}
+
+/* ---- RESPONSIVE ---- */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:40px;}
+  .hero-pulse{display:none;}
+  .how-grid{grid-template-columns:1fr;}
+  .how-step::after{display:none;}
+  .pricing-grid{grid-template-columns:1fr;}
+  .testimonials-grid{grid-template-columns:1fr;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+  .stat-item{border-bottom:1px solid rgba(255,255,255,0.08);}
+  .stat-item:nth-child(even){border-right:none;}
+  .footer-top{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:600px){
+  .hero{padding:72px 18px 56px;}
+  .section{padding:60px 18px;}
+  .nav-links{display:none;}
+  .nav-mobile-btn{display:block;}
+  .nav-inner{padding:0 18px;}
+  .footer-top{grid-template-columns:1fr;}
+  .stats-inner{grid-template-columns:1fr 1fr;}
+}
+
+/* ---- ANIMATIONS ---- */
+@keyframes fade-up{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.anim{opacity:0;}
+.anim.visible{animation:fade-up 500ms ease forwards;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">V</div>
+      <span class="nav-logo-name">Vantage HR</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a href="portal.html">Employee portal</a>
+    </div>
+    <a href="index.html" class="nav-cta">Open the app →</a>
+    <button class="nav-mobile-btn" aria-label="Menu" id="nav-mob-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow"><span class="dot"></span>Built for East Africa</div>
+      <h1 class="hero-headline">
+        Your people.<br>
+        Running like <em>clockwork.</em>
+      </h1>
+      <p class="hero-sub">
+        Vantage HR is a complete people-management platform for East African businesses.
+        From hire to retire — payroll, leave, recruitment, performance, and 20+ more modules in one place.
+      </p>
+      <div class="hero-actions">
+        <a href="index.html" class="btn-primary">Try the live demo</a>
+        <a href="#features" class="btn-ghost">See all features ↓</a>
+      </div>
+    </div>
+
+    <div class="hero-pulse">
+      <div class="hp-label"><span class="live-dot"></span>Live across all organisations</div>
+      <div class="hp-grid">
+        <div class="hp-stat"><div class="hs-n" id="stat-employees">36</div><div class="hs-l">Employees tracked</div><div class="hs-up">↑ 3 this quarter</div></div>
+        <div class="hp-stat"><div class="hs-n" id="stat-orgs">3</div><div class="hs-l">Active workspaces</div><div class="hs-up">Hospital · Logistics · Finance</div></div>
+        <div class="hp-stat"><div class="hs-n" id="stat-modules">26</div><div class="hs-l">Modules included</div><div class="hs-up">No add-ons needed</div></div>
+        <div class="hp-stat"><div class="hs-n" id="stat-actions">0</div><div class="hs-l">Pending approvals</div><div class="hs-up">All caught up</div></div>
+      </div>
+      <div class="hp-modules">
+        <span class="hp-mod">Payroll</span><span class="hp-mod">Leave</span><span class="hp-mod">Recruitment</span>
+        <span class="hp-mod">Performance</span><span class="hp-mod">e-Signatures</span><span class="hp-mod">+21 more</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUSTED BY -->
+<div class="trusted">
+  <div class="trusted-inner">
+    <div class="trusted-label">Demo organisations in the platform</div>
+    <div class="trusted-logos">
+      <div class="trusted-logo"><div class="tl-mark" style="background:#1E6E4B;">KR</div>Kampala Ridge Hospital</div>
+      <div class="trusted-logo"><div class="tl-mark" style="background:#1A4E8A;">NL</div>Nile Logistics Co.</div>
+      <div class="trusted-logo"><div class="tl-mark" style="background:#5C3D8F;">EQ</div>Equator Microfinance Bank</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODULE STRIP -->
+<div style="max-width:1160px;margin:0 auto;padding:36px 28px 0;">
+  <div class="module-strip">
+    <div class="ms-item"><span class="ms-icon">📊</span>Dashboard</div>
+    <div class="ms-item"><span class="ms-icon">👥</span>Employees</div>
+    <div class="ms-item"><span class="ms-icon">🗓️</span>Leave</div>
+    <div class="ms-item"><span class="ms-icon">⏰</span>Shifts</div>
+    <div class="ms-item"><span class="ms-icon">🎯</span>Recruitment</div>
+    <div class="ms-item"><span class="ms-icon">💰</span>Payroll</div>
+    <div class="ms-item"><span class="ms-icon">⭐</span>Performance</div>
+    <div class="ms-item"><span class="ms-icon">📈</span>Reports</div>
+    <div class="ms-item"><span class="ms-icon">🏥</span>Benefits</div>
+    <div class="ms-item"><span class="ms-icon">🧾</span>Expenses</div>
+    <div class="ms-item"><span class="ms-icon">🖥️</span>Assets</div>
+    <div class="ms-item"><span class="ms-icon">📚</span>Learning</div>
+    <div class="ms-item"><span class="ms-icon">💬</span>Engagement</div>
+    <div class="ms-item"><span class="ms-icon">✈️</span>Travel</div>
+    <div class="ms-item"><span class="ms-icon">✍️</span>e-Signatures</div>
+    <div class="ms-item"><span class="ms-icon">📋</span>Service Desk</div>
+    <div class="ms-item"><span class="ms-icon">🌱</span>Onboarding</div>
+    <div class="ms-item"><span class="ms-icon">🔭</span>Succession</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="features-intro anim">
+      <div class="eyebrow">Everything in one place</div>
+      <h2 class="section-headline">Not ten tools. One platform.</h2>
+      <p class="section-sub">
+        Every HR function your business needs, built to work together so your data is always consistent and your team always informed.
+      </p>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card anim">
+        <div class="fc-icon">💼</div>
+        <div class="fc-title">People & Recruitment</div>
+        <p class="fc-desc">A complete employee directory with full profiles, org chart, onboarding checklists, and a recruitment pipeline with kanban, scorecards, and public job board.</p>
+        <div class="fc-modules"><span class="fc-tag">Employees</span><span class="fc-tag">Recruitment</span><span class="fc-tag">Org chart</span><span class="fc-tag">Onboarding</span></div>
+      </div>
+      <div class="feature-card anim">
+        <div class="fc-icon">💰</div>
+        <div class="fc-title">Payroll & Compensation</div>
+        <p class="fc-desc">Run payroll in seconds with simplified PAYE, NSSF, and net-pay calculations. Payslip generation, bonus and deduction adjustments, multi-currency, and salary bands.</p>
+        <div class="fc-modules"><span class="fc-tag">Payroll</span><span class="fc-tag">Payslips</span><span class="fc-tag">Compensation bands</span><span class="fc-tag">Merit cycles</span></div>
+      </div>
+      <div class="feature-card anim">
+        <div class="fc-icon">🗓️</div>
+        <div class="fc-title">Leave & Attendance</div>
+        <p class="fc-desc">Real leave balances that deduct on approval, a team leave calendar, public holiday calendar for Uganda 2026, configurable leave policies, and shift scheduling.</p>
+        <div class="fc-modules"><span class="fc-tag">Leave</span><span class="fc-tag">Attendance</span><span class="fc-tag">Shifts</span><span class="fc-tag">Holidays</span></div>
+      </div>
+      <div class="feature-card anim">
+        <div class="fc-icon">⭐</div>
+        <div class="fc-title">Performance & Goals</div>
+        <p class="fc-desc">360° reviews (manager, self, peer), quarterly review cycles, per-employee goal assignment with progress tracking, and a rating trend chart across cycles.</p>
+        <div class="fc-modules"><span class="fc-tag">Reviews</span><span class="fc-tag">360° feedback</span><span class="fc-tag">Goals</span><span class="fc-tag">Cycles</span></div>
+      </div>
+      <div class="feature-card anim">
+        <div class="fc-icon">📈</div>
+        <div class="fc-title">Reports & Workforce Planning</div>
+        <p class="fc-desc">Five report tabs with date-range filtering, SVG bar and line charts, PDF and CSV export, saved reports, headcount forecasts, and budget vs. actual tracking.</p>
+        <div class="fc-modules"><span class="fc-tag">Reports</span><span class="fc-tag">Workforce planning</span><span class="fc-tag">Executive dashboard</span></div>
+      </div>
+      <div class="feature-card anim">
+        <div class="fc-icon">✍️</div>
+        <div class="fc-title">Documents & Compliance</div>
+        <p class="fc-desc">Send documents for e-signature with a live canvas signing experience, knowledge base for HR policies, and a full audit log of every change across the platform.</p>
+        <div class="fc-modules"><span class="fc-tag">e-Signatures</span><span class="fc-tag">Knowledge base</span><span class="fc-tag">Audit log</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAND -->
+<div class="stats-band">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="si-num"><span class="si-highlight">26</span></div><div class="si-label">HR modules included in every plan</div></div>
+    <div class="stat-item"><div class="si-num"><span class="si-highlight">3</span></div><div class="si-label">Multi-tenant orgs in one account</div></div>
+    <div class="stat-item"><div class="si-num"><span class="si-highlight">0</span></div><div class="si-label">Integration fees or hidden add-ons</div></div>
+    <div class="stat-item"><div class="si-num"><span class="si-highlight">100%</span></div><div class="si-label">Browser-based, no installation</div></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how">
+  <div class="section-inner">
+    <div class="features-intro anim">
+      <div class="eyebrow">Getting started</div>
+      <h2 class="section-headline">Up and running in minutes</h2>
+      <p class="section-sub">No IT team, no installation, no waiting. Vantage HR runs entirely in your browser.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-step anim">
+        <div class="hs-num">1</div>
+        <h3 class="hs-title">Create your workspace</h3>
+        <p class="hs-desc">Sign up, name your organisation, and set your brand colour. Your HR portal is ready immediately — no IT setup required.</p>
+      </div>
+      <div class="how-step anim">
+        <div class="hs-num">2</div>
+        <h3 class="hs-title">Bring your people in</h3>
+        <p class="hs-desc">Import employees from a CSV file or add them one by one. Set departments, salaries, and leave policies in under five minutes.</p>
+      </div>
+      <div class="how-step anim">
+        <div class="hs-num">3</div>
+        <h3 class="hs-title">Run everything from one place</h3>
+        <p class="hs-desc">Approve leave requests, run payroll, post jobs, conduct reviews, and send offer letters — all from a single dashboard built for your team.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-inner">
+    <div class="pricing-intro anim">
+      <div class="eyebrow">Simple pricing</div>
+      <h2 class="section-headline">One price. Every feature.</h2>
+      <p class="section-sub">No per-module fees. No surprises. All 26 modules are available on every plan.</p>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card anim">
+        <div class="pc-plan">Starter</div>
+        <div class="pc-price"><sup>UGX</sup>150,000<span class="per"> /mo</span></div>
+        <p class="pc-tagline">For teams up to 25 people just getting started with HR software.</p>
+        <hr class="pc-divider">
+        <div class="pc-feature"><span class="check">✓</span>Up to 25 employees</div>
+        <div class="pc-feature"><span class="check">✓</span>All 26 core modules</div>
+        <div class="pc-feature"><span class="check">✓</span>Payroll and payslips</div>
+        <div class="pc-feature"><span class="check">✓</span>Leave management</div>
+        <div class="pc-feature"><span class="check">✓</span>Email support</div>
+        <div class="pc-feature"><span class="cross">—</span>Multi-workspace</div>
+        <div class="pc-feature"><span class="cross">—</span>API access</div>
+        <a href="index.html" class="pc-cta outline">Start free trial</a>
+        <p class="pc-note">30-day free trial, no card required</p>
+      </div>
+      <div class="pricing-card popular anim">
+        <div class="popular-badge">MOST POPULAR</div>
+        <div class="pc-plan">Growth</div>
+        <div class="pc-price"><sup>UGX</sup>350,000<span class="per"> /mo</span></div>
+        <p class="pc-tagline">For growing organisations that need more people, more power.</p>
+        <hr class="pc-divider">
+        <div class="pc-feature"><span class="check">✓</span>Up to 150 employees</div>
+        <div class="pc-feature"><span class="check">✓</span>All 26 core modules</div>
+        <div class="pc-feature"><span class="check">✓</span>Payroll and payslips</div>
+        <div class="pc-feature"><span class="check">✓</span>Leave management</div>
+        <div class="pc-feature"><span class="check">✓</span>Priority support</div>
+        <div class="pc-feature"><span class="check">✓</span>Multi-workspace (3 orgs)</div>
+        <div class="pc-feature"><span class="check">✓</span>API access</div>
+        <a href="index.html" class="pc-cta solid">Start free trial</a>
+        <p class="pc-note">30-day free trial, no card required</p>
+      </div>
+      <div class="pricing-card anim">
+        <div class="pc-plan">Enterprise</div>
+        <div class="pc-price" style="font-size:28px;padding-top:6px;">Let's talk</div>
+        <p class="pc-tagline">For large organisations, group companies, and custom requirements.</p>
+        <hr class="pc-divider">
+        <div class="pc-feature"><span class="check">✓</span>Unlimited employees</div>
+        <div class="pc-feature"><span class="check">✓</span>All 26 core modules</div>
+        <div class="pc-feature"><span class="check">✓</span>Custom onboarding</div>
+        <div class="pc-feature"><span class="check">✓</span>Dedicated account manager</div>
+        <div class="pc-feature"><span class="check">✓</span>SLA-backed support</div>
+        <div class="pc-feature"><span class="check">✓</span>Unlimited workspaces</div>
+        <div class="pc-feature"><span class="check">✓</span>Custom integrations</div>
+        <a href="mailto:kabuusumonalisa@gmail.com" class="pc-cta outline">Contact us</a>
+        <p class="pc-note">Usually responds within 1 business day</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section section-dark">
+  <div class="section-inner">
+    <div class="features-intro anim" style="text-align:center;">
+      <div class="eyebrow">What HR teams say</div>
+      <h2 class="section-headline" style="color:var(--white);">Built for the way African HR teams actually work</h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial anim">
+        <p class="t-quote">Before Vantage HR we were tracking leave in a spreadsheet and payroll in a separate system. Now everything is in one place and our monthly close takes half the time it used to.</p>
+        <div class="t-person">
+          <div class="t-avatar" style="background:#1E6E4B;color:#fff;">PN</div>
+          <div><div class="t-name">Patricia Nantongo</div><div class="t-role">HR Manager · Kampala Ridge Hospital</div></div>
+        </div>
+      </div>
+      <div class="testimonial anim">
+        <p class="t-quote">The recruitment pipeline changed everything for us. We used to lose track of candidates between stages. Now the whole team can see where every application stands and we've cut our time-to-hire significantly.</p>
+        <div class="t-person">
+          <div class="t-avatar" style="background:#1A4E8A;color:#fff;">BO</div>
+          <div><div class="t-name">Brian Okello</div><div class="t-role">Operations Director · Nile Logistics Co.</div></div>
+        </div>
+      </div>
+      <div class="testimonial anim">
+        <p class="t-quote">The compliance modules — AML acknowledgements, e-signatures, the audit log — these are things we needed for our regulators. Vantage HR gave us documentation we could actually show in an audit.</p>
+        <div class="t-person">
+          <div class="t-avatar" style="background:#5C3D8F;color:#fff;">DK</div>
+          <div><div class="t-name">Diana Kemigisha</div><div class="t-role">CEO · Equator Microfinance Bank</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-inner">
+    <div class="pricing-intro anim">
+      <div class="eyebrow">Questions</div>
+      <h2 class="section-headline">Frequently asked</h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q">Does Vantage HR handle Ugandan PAYE and NSSF calculations?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Yes. Vantage HR calculates PAYE and NSSF contributions for every payslip. The figures use simplified tax brackets appropriate for a platform prototype — for production deployment we work with each client to configure the exact URA-compliant tax tables for their workforce.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can I manage multiple companies or branches in one account?<span class="faq-icon">+</span></button>
+        <div class="faq-a">Yes. The Growth and Enterprise plans support multiple workspaces, each with their own employees, policies, branding, and data — completely isolated from each other. The Executive Dashboard gives you a cross-organisation rollup view so group-level leaders can see the full picture.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Is my data secure? Where is it stored?<span class="faq-icon">+</span></button>
+        <div class="faq-a">In the current prototype, all data is stored locally in your browser using the browser's built-in storage — nothing is transmitted to any external server. For production deployment we use encrypted cloud storage in the region of your choice, with role-based access control and a full audit log of every action.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Do I need IT support or a developer to set it up?<span class="faq-icon">+</span></button>
+        <div class="faq-a">No. Vantage HR runs entirely in your browser with no installation. Getting started takes under 10 minutes — create a workspace, upload your employee list via CSV, and you're live. The Starter plan includes onboarding guidance and our team is available by email if you need help.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q">Can employees access their own profiles, payslips, and leave?<span class="faq-icon">+</span></button>
+        <div class="faq-a">An employee self-service portal is on the roadmap and will let staff view their own payslips, submit leave requests, update their details, and track their goals and learning progress — without accessing the full HR admin view. This is available on the Growth and Enterprise plans.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2 class="cta-headline">Ready to bring your HR into one place?</h2>
+    <p class="cta-sub">Try the full platform free for 30 days. No credit card, no setup fee, no IT team required.</p>
+    <div class="cta-actions">
+      <a href="index.html" class="btn-white">Open the live demo →</a>
+      <a href="mailto:kabuusumonalisa@gmail.com" class="btn-ghost-white">Talk to the team</a>
+    </div>
+    <p class="cta-footnote">Questions? Email us at kabuusumonalisa@gmail.com · +256 703 953 711 · Uganda, East Africa</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="fb-logo">
+          <div class="fb-logo-mark">V</div>
+          <div class="fb-name">Vantage HR</div>
+        </div>
+        <p>A complete HR and people-management platform for East African organisations. Built by Monalisa Tech Solutions.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="index.html">Live demo</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Modules</h4>
+        <ul>
+          <li><a href="index.html">Payroll</a></li>
+          <li><a href="index.html">Recruitment</a></li>
+          <li><a href="index.html">Performance</a></li>
+          <li><a href="index.html">Leave & Shifts</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="mailto:kabuusumonalisa@gmail.com">Contact us</a></li>
+          <li><a href="mailto:kabuusumonalisa@gmail.com">Request a demo</a></li>
+          <li><a href="#">Privacy policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Monalisa Tech Solutions. All rights reserved.</p>
+      <p><a href="mailto:kabuusumonalisa@gmail.com">kabuusumonalisa@gmail.com</a> · <a href="tel:+256703953711">+256 703 953 711</a> · Uganda, East Africa</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---- COUNTER ANIMATION ---- */
+function animateCount(el, target, suffix){
+  let start = 0;
+  const step = Math.ceil(target / 40);
+  const interval = setInterval(()=>{
+    start = Math.min(start + step, target);
+    el.textContent = start + (suffix||'');
+    if(start >= target) clearInterval(interval);
+  }, 28);
+}
+
+/* ---- COUNTER TRIGGERS ON SCROLL ---- */
+let countersFired = false;
+const heroObserver = new IntersectionObserver((entries)=>{
+  if(entries[0].isIntersecting && !countersFired){
+    countersFired = true;
+    animateCount(document.getElementById('stat-employees'), 36);
+    animateCount(document.getElementById('stat-orgs'), 3);
+    animateCount(document.getElementById('stat-modules'), 26);
+    animateCount(document.getElementById('stat-actions'), 7);
+  }
+}, { threshold: 0.3 });
+const heroPulse = document.querySelector('.hero-pulse');
+if(heroPulse) heroObserver.observe(heroPulse);
+
+/* ---- FADE-IN ON SCROLL ---- */
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold: 0.10 });
+document.querySelectorAll('.anim').forEach(el=> observer.observe(el));
+
+/* ---- FAQ ACCORDION ---- */
+document.querySelectorAll('.faq-q').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const item = btn.closest('.faq-item');
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  });
+});
+
+/* ---- NAV SCROLL SHADOW ---- */
+const nav = document.querySelector('.nav');
+window.addEventListener('scroll',()=>{
+  nav.style.boxShadow = window.scrollY > 20 ? '0 2px 24px rgba(0,0,0,0.3)' : 'none';
+}, { passive:true });
+
+/* ---- NAV ACTIVE SECTION HIGHLIGHT ---- */
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a');
+const sectionObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(a=>{ a.style.color = a.getAttribute('href')==='#'+e.target.id ? '#fff' : 'rgba(255,255,255,0.72)'; });
+    }
+  });
+}, { threshold: 0.4 });
+sections.forEach(s=> sectionObserver.observe(s));
+
+/* ---- MOBILE NAV DRAWER ---- */
+const mobileNavHTML = `
+<div id="mobile-nav-drawer" style="
+  position:fixed;inset:0;z-index:999;display:none;
+  background:rgba(10,37,24,0.97);backdrop-filter:blur(8px);
+  flex-direction:column;padding:28px;
+">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:40px;">
+    <div style="font-family:'DM Serif Display',serif;font-size:17px;color:#fff;">Vantage HR</div>
+    <button id="mobile-nav-close" style="background:transparent;border:none;cursor:pointer;color:rgba(255,255,255,0.7);font-size:28px;line-height:1;">✕</button>
+  </div>
+  <nav style="display:flex;flex-direction:column;gap:6px;">
+    ${['Features:#features','How it works:#how','Pricing:#pricing','FAQ:#faq'].map(item=>{
+      const [label,href] = item.split(':');
+      return `<a href="${href}" style="font-size:22px;font-family:'DM Serif Display',serif;color:rgba(255,255,255,0.85);text-decoration:none;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.07);">${label}</a>`;
+    }).join('')}
+  </nav>
+  <a href="index.html" style="
+    margin-top:auto;padding:16px;background:#C9A84C;color:#0A2518;
+    font-size:16px;font-weight:700;border-radius:12px;text-align:center;text-decoration:none;
+  ">Open the live demo →</a>
+</div>`;
+document.body.insertAdjacentHTML('beforeend', mobileNavHTML);
+
+const drawer = document.getElementById('mobile-nav-drawer');
+document.getElementById('nav-mob-btn').addEventListener('click',()=>{ drawer.style.display='flex'; document.body.style.overflow='hidden'; });
+document.getElementById('mobile-nav-close').addEventListener('click',()=>{ drawer.style.display='none'; document.body.style.overflow=''; });
+drawer.querySelectorAll('a[href^="#"]').forEach(a=>{ a.addEventListener('click',()=>{ drawer.style.display='none'; document.body.style.overflow=''; }); });
+</script>
+</body>
+</html>
