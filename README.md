@@ -69,4 +69,4 @@ Dashboard · Employees · Leave & Attendance · Shift Scheduling · Recruitment 
 ## Business contact
 
 **Monalisa Tech Solutions**
-kabuusumonalisa@gmail.com · +256 703 953 711 · Uganda, East Africa
+kabuusumohammed182@gmail.com · +1 913 899 2840· Uganda, East Africa
