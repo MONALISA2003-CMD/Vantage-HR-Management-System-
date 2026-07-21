@@ -1,0 +1,57 @@
+name: Deploy Vantage HR
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Unzip Vantage HR
+        run: unzip vantage-hr-final.zip -d ./site
+
+      - name: Delete old loose files from repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git rm -f \
+            index.html app.html app.js styles.css \
+            portal.html landing.html 404.html nav.js \
+            manifest.json robots.txt sitemap.xml \
+            favicon.svg icon-192.svg icon-512.svg \
+            vercel.json _redirects 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "chore: clean old files — now served from zip"
+          git push || true
+
+      - name: Set landing page as homepage
+        run: cp ./site/landing.html ./site/index.html
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
